@@ -1,0 +1,26 @@
+package rules.package1;
+
+import com.example.policyengine.facts.*
+
+
+declare  MonitoredComponent 
+    @expires( 5m )
+    @role( event )
+
+end
+
+
+rule "My First Drools Rule"
+    when
+        $o: Object()
+    then
+        System.out.println(" >>> Rule Fired for Object policy2 changed: "+$o.toString());
+end
+
+rule "My Second Drools Rule"
+    when
+        $tot0 := java.lang.Double( $tot0 >170.0 ) from accumulate($m0 := MonitoredComponent( name== "vnf1" && metric== "CPULoad" ) over window:time(70s)from entry-point "MonitoringStream" ,
+        average( $m0.getValue() )  )
+    then
+        System.out.println(" >>> Rule Fired for MonitoredComponent policy example");
+end

@@ -1,0 +1,49 @@
+// create image for policyengine
+docker  build -t policyengine .
+
+docker images
+
+docker run policyengine
+
+//Go to /home/eleni/NetBeansProjects/traefik/examples/quickstart/
+//before stop apache because traefik uses the port 80
+sudo service apache2 stop
+docker-compose up -d reverse-proxy 
+//access traefik at http://localhost:8080/dashboard/
+docker-compose down --remove-orphans
+
+docker-compose up -d policyengine
+docker-compose up -d policyengine
+docker-compose up -d --scale policyengine=2 
+
+//In local modality
+java -jar -Dspring.profiles.active=policyProfile  target/policyengine-0.0.1-SNAPSHOT.jar
+
+docker ps --size
+docker exec -it  c835782872e7  bash
+docker logs c835782872e7 --follow
+docker stop 169d1c80dd87
+
+
+//Start broker
+docker-compose up -d broker
+docker exec broker rabbitmq-plugins enable rabbitmq_management
+//configure the rabbitmq by ip in the application properties of policyengine
+//Access to http://localhost:15672 with username/password guest/guest
+
+//start nexus container
+docker run -d -p 8081:8081 -p 8082:8082 -p 8083:8083 --name my-nexus sonatype/nexus3:3.0.0
+//create maven-group 
+//deploy kjars to ubi-nexus
+http://codeheaven.io/using-nexus-3-as-your-repository-part-1-maven-artifacts/
+//see nexus at http://localhost:8081
+https://dzone.com/articles/using-github-as-maven-repository
+
+//observation
+when a queue is binded to an exchange topic then the workers consume one by one the messages
+If you run multiple instances of policy manager connected to RabbitMQ then it is by default be load balanced. Messages are given to consumers in a round-robin fashion
+
+when a queue is defined per se then no message is consumed in distributed mode
+
+the "selective consumer" is an anti-pattern in RabbitMQ. AWK
+

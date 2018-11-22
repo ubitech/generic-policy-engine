@@ -1,0 +1,35 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.drools.workshop</groupId>
+    <artifactId>sample-kjar</artifactId>
+    <version>1.0.3-SNAPSHOT</version>
+    <packaging>jar</packaging>
+
+    <name>sample-kjar</name>
+    <url>http://salaboy.com</url>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        
+    </properties>
+    <repositories>
+        <repository>
+            <id>maven-group</id>
+            <url>http://192.168.1.84:8081//repository/maven-group/</url>
+        </repository>
+    </repositories>
+    
+    <distributionManagement>
+    <snapshotRepository>
+      <id>nexus-snapshots</id>
+      <url>http://192.168.1.84:8081/repository/maven-snapshots/</url>
+    </snapshotRepository>
+    <repository>
+      <id>nexus-releases</id>
+      <url>http://192.168.1.84:8081/repository/maven-releases/</url>
+    </repository>
+  </distributionManagement>
+  
+</project>

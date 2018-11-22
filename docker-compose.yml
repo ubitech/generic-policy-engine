@@ -1,0 +1,30 @@
+version: '3'
+services:
+  # The reverse proxy service (Traefik)
+  reverse-proxy:
+    image: traefik  # The official Traefik docker image
+    command: --api --docker  # Enables the web UI and tells Traefik to listen to docker
+    ports:
+      - "80:80"      # The HTTP port
+      - "8080:8080"  # The Web UI (enabled by --api)
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock  # So that Traefik can listen to the Docker events
+  broker:
+    image: rabbitmq:3
+    ports:
+     - "5672:5672"
+     - "15672:15672"
+    container_name: broker
+    restart: always
+  #policyengine:
+  #  build:
+  #   context: .
+  #   dockerfile: Dockerfile
+  #  ports:
+  #    - "8090:8090"
+  #  restart: always
+  # A container that exposes a sample rule engine
+  policyengine:
+    image: policyengine  # A container that exposes an API to show it's IP address
+    labels:
+      - "traefik.frontend.rule=Host:policyengine.docker.localhost"
