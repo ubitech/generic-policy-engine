@@ -1,3 +1,6 @@
+A KieScanner is a scanner of the maven repositories (both local and remote) used to automatically discover if there are new releases for a given KieModule and its dependencies and eventually deploy them in the KieRepository
+
+
 // create image for policyengine
 docker  build -t policyengine .
 
@@ -33,7 +36,7 @@ docker exec broker rabbitmq-plugins enable rabbitmq_management
 
 //start nexus container
 docker run -d -p 8081:8081 -p 8082:8082 -p 8083:8083 --name my-nexus sonatype/nexus3:3.0.0
-//create maven-group 
+//create maven-group with central-releases-snapshots
 //deploy kjars to ubi-nexus
 http://codeheaven.io/using-nexus-3-as-your-repository-part-1-maven-artifacts/
 //see nexus at http://localhost:8081
