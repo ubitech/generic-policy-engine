@@ -87,7 +87,6 @@ public class PolicyengineApplication {
     @Bean
     MessageListenerAdapter listenerAdapter2(MonitoringListener receiver) {
         MessageListenerAdapter msgadapter = new MessageListenerAdapter(receiver, "monitoringAlertReceived");
-        //msgadapter.setMessageConverter(jackson2JsonMessageConverter());
         return msgadapter;
     }
 
@@ -102,34 +101,7 @@ public class PolicyengineApplication {
         return container;
     }
 
-    //---------------------------------------------
-//    @Bean
-//    public Queue monitoringQueue() {
-//        return new Queue(MONITORING_QUEUE, false);
-//    }
-//
-//    @Bean
-//    Binding bindingMonitoringQueue(TopicExchange exchange) {
-//        return BindingBuilder.bind(monitoringQueue()).to(exchange).with(MONITORING_TOPIC);
-//    }
-//
-//    @Qualifier("monitoringlistenerAdapter")
-//    @Bean
-//    MessageListenerAdapter monitoringlistenerAdapter(MonitoringListener receiver) {
-//        MessageListenerAdapter msgadapter = new MessageListenerAdapter(receiver, "monitoringAlertReceived");
-//        return msgadapter;
-//    }
-//
-//    @Qualifier("monitoringcontainer")
-//    @Bean
-//    SimpleMessageListenerContainer monitoringcontainer(ConnectionFactory connectionFactory,
-//            @Qualifier("monitoringlistenerAdapter") MessageListenerAdapter listenerAdapter) {
-//        SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
-//        container.setConnectionFactory(connectionFactory);
-//        container.setQueueNames(monitoringQueue().getName());
-//        container.setMessageListener(listenerAdapter);
-//        return container;
-//    }
+
     public static void main(String[] args) {
         SpringApplication.run(PolicyengineApplication.class, args);
 

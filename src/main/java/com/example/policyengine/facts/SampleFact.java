@@ -16,9 +16,10 @@ public class SampleFact {
     private static org.slf4j.Logger log = LoggerFactory.getLogger(SampleFact.class);
 
     private String value;
+    private String deployed_graph;
 
-    public SampleFact(String value) {
-
+    public SampleFact(String value, String deployed_graph) {
+        this.deployed_graph = deployed_graph;
         this.value = value;
 
     }
@@ -31,9 +32,19 @@ public class SampleFact {
         this.value = value;
     }
 
+    public String getDeployed_graph() {
+        return deployed_graph;
+    }
+
+    public void setDeployed_graph(String deployed_graph) {
+        this.deployed_graph = deployed_graph;
+    }
+    
+    
+
     @Override
     public String toString() {
-        return "SampleFact: {value=" + value + "}";
+        return "SampleFact: {deployed_graph="+ deployed_graph +", value=" + value + "}";
     }
 
     @Override
@@ -45,17 +56,17 @@ public class SampleFact {
             return false;
         }
         SampleFact that = (SampleFact) o;
-        return this.value.equals(that.value);
+        return this.value.equals(that.value) && this.deployed_graph.equals(that.deployed_graph);
     }
 
     @Override
     public int hashCode() {
-        int result = value.hashCode();
+        int result = value.hashCode() + deployed_graph.hashCode();
         return result;
     }
 
     public void dosomething(String factvalue) {
-        
+
         log.info("I did something " + factvalue);
 
     }

@@ -27,7 +27,6 @@ import javax.xml.transform.stream.StreamResult;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
 /**
@@ -38,7 +37,7 @@ public class Util {
 
     private static org.slf4j.Logger log = LoggerFactory.getLogger(Util.class);
 
-    public static void createKjar(String groupId, String artifactId, String version) {
+    public static void createKjar(String groupId, String artifactId, String version, String rules) {
 
         //read file into stream, try-with-resources
         Path copyFrom = Paths.get("sample-kjar");
@@ -92,6 +91,10 @@ public class Util {
                     + "</kmodule>";
 
             Files.write(Paths.get(artifactId + "/src/main/resources/META-INF/kmodule.xml"), kmodulexmlString.getBytes());
+            
+            
+            //update rules.drl
+            Files.write(Paths.get(artifactId + "/src/main/resources/rules/rules.drl"), rules.getBytes());
 
             //update rules
             File rulesFile = new File(artifactId + "/src/main/resources/rules/rules.drl");
@@ -110,7 +113,7 @@ public class Util {
 
     }
 
-    public static void deployKjar(String artifactId) {
+    public static boolean deployKjar(String artifactId) {
 
         try {
             String[] command = {"./deploykjar.sh", artifactId};
@@ -122,6 +125,7 @@ public class Util {
         } catch (InterruptedException ex) {
             Logger.getLogger(Util.class.getName()).log(Level.SEVERE, null, ex);
         }
+        return true;
     }
 
     public static void copyFolder(Path src, Path dest) {
@@ -145,4 +149,5 @@ public class Util {
         }
     }
 
+    
 }

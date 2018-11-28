@@ -14,13 +14,13 @@ public class MonitoredComponent {
     private String name;
     private String metric;
     private double value;
-    private String groundedGraphid;
+    private String deployed_graph;
 
-    public MonitoredComponent(String name, String metric, double value, String groundedGraphid) {
+    public MonitoredComponent(String name, String metric, double value, String deployed_graph) {
         this.name = name;
         this.metric = metric;
         this.value = value;
-        this.groundedGraphid = groundedGraphid;
+        this.deployed_graph = deployed_graph;
     }
 
     public String getName() {
@@ -47,12 +47,12 @@ public class MonitoredComponent {
         this.metric = metric;
     }
 
-    public String getGroundedGraphid() {
-        return groundedGraphid;
+    public String getDeployed_graph() {
+        return deployed_graph;
     }
 
-    public void setGroundedGraphid(String groundedGraphid) {
-        this.groundedGraphid = groundedGraphid;
+    public void setDeployed_graph(String deployed_graph) {
+        this.deployed_graph = deployed_graph;
     }
 
 
@@ -61,7 +61,7 @@ public class MonitoredComponent {
         return "MonitoredComponent: { name=\"" + name + "\""
                 + ",metric=\"" + metric + "\""
                 + ", value=" + value
-                + ",groundedGraphid=\"" + groundedGraphid + "\"}";
+                + ",deployed_graph=\"" + deployed_graph + "\"}";
     }
 
     @Override
@@ -73,12 +73,12 @@ public class MonitoredComponent {
             return false;
         }
         MonitoredComponent that = (MonitoredComponent) o;
-        return this.value == that.value && this.name.equals(that.name) && this.groundedGraphid.equals(that.groundedGraphid);
+        return this.value == that.value && this.name.equals(that.name) && this.deployed_graph.equals(that.deployed_graph);
     }
 
     @Override
     public int hashCode() {
-        int result = groundedGraphid.hashCode();
+        int result = deployed_graph.hashCode();
         result = (int) (31 * result + value);
         return result;
     }

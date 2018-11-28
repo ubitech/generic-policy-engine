@@ -5,6 +5,7 @@
  */
 package com.example.policyengine.messaging;
 
+import com.example.policyengine.KieContainersManagement.KieUtil;
 import com.example.policyengine.PolicyengineApplication;
 import static com.example.policyengine.Util.createKjar;
 import static com.example.policyengine.Util.deployKjar;
@@ -22,6 +23,7 @@ import org.kie.api.builder.ReleaseId;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.EntryPoint;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  *
@@ -32,6 +34,18 @@ public class DeployedNSListener {
 
     private static Logger log = LoggerFactory.getLogger(DeployedNSListener.class);
 
+    @Autowired
+    private KieUtil kieUtil;
+
+    /*
+     routing_key : service.instances.create
+     content_type: application/json
+    
+     {
+	"deployed_graph": "my-x-kjar",
+	"rules": "package rules.package1;\n import com.example.policyengine.facts.*\n declare  MonitoredComponent \n  @expires( 5m )\n  @role( event )\n end\n rule \"My First policy_name Rule\"\n when\n $o: Object()\n then\n System.out.println(\" >>> Rule Fired for Object policy_name changed: \"+$o.toString());\n end\n rule \"My Second policy_name Rule\"\n when\n        $tot0 := java.lang.Double( $tot0 >70.0 ) from accumulate($m0 := MonitoredComponent( name== \"vnf1\" && metric== \"CPULoad\" ) over window:time(70s)from entry-point \"MonitoringStream\" ,\n        average( $m0.getValue() )  )\n     then\n System.out.println(\" >>> Rule Fired for MonitoredComponent policy example\");\n end\n\n rule \"My Third policy_name Rule\"\n when\n $sampleFact: SampleFact()\n then\n $sampleFact.dosomething($sampleFact.getValue());\n end"
+     }
+     */
     @RabbitListener(queues = PolicyengineApplication.NS_INSTATIATION_QUEUE)
     public void deployedNSMessageReceived(byte[] message) {
 
@@ -43,8 +57,17 @@ public class DeployedNSListener {
         String version = "1.0.0-SNAPSHOT";
         JSONObject messageToJSON = new JSONObject(messageToString);
         String artifactId = messageToJSON.getString("deployed_graph");
-        createKjar(groupId,artifactId,version);
+        String rules = messageToJSON.getString("rules");
+        createKjar(groupId, artifactId, version, rules);
         deployKjar(artifactId);
+        
+        //TODO:check succesfull exit code from bash script execution
+
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
         //enforce policy
         KieServices ks = KieServices.Factory.get();
@@ -57,37 +80,38 @@ public class DeployedNSListener {
         String sessionname = artifactId;
         final KieSession ksession = kcontainer2.newKieSession(sessionname);
 
-        Thread t = new Thread() {
+        kieUtil.fireKieSession(ksession, sessionname);
 
-            @Override
-            public void run() {
-                ksession.fireUntilHalt();
-            }
-        };
-
-        t.setName(sessionname);
-
-        t.start();
-
-        for (int i = 0; i < 100; i++) {
-            kscanner2.scanNow();
-            ksession.insert(new String("Eleni"));
-            ksession.insert(new SampleFact("SampleFactValue"));
-
-            MonitoredComponent component = new MonitoredComponent("vnf1", "CPULoad", 80, "test");
-            EntryPoint monitoringStream = ksession.getEntryPoint("MonitoringStream");
-
-            monitoringStream.insert(component);
-
-            System.out.println("facts number " + ksession.getObjects().size());
-            try {
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-        kscanner2.stop();
-
+//        Thread t = new Thread() {
+//
+//            @Override
+//            public void run() {
+//                ksession.fireUntilHalt();
+//            }
+//        };
+//
+//        t.setName(sessionname);
+//
+//        t.start();
+//
+//        for (int i = 0; i < 100; i++) {
+//            kscanner2.scanNow();
+//            ksession.insert(new String("Eleni"));
+//            //ksession.insert(new SampleFact("SampleFactValue"));
+//
+//            MonitoredComponent component = new MonitoredComponent("vnf1", "CPULoad", 80, "test");
+//            EntryPoint monitoringStream = ksession.getEntryPoint("MonitoringStream");
+//
+//            monitoringStream.insert(component);
+//
+//            System.out.println("facts number " + ksession.getObjects().size());
+//            try {
+//                Thread.sleep(2000);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//        kscanner2.stop();
     }
 
 }
