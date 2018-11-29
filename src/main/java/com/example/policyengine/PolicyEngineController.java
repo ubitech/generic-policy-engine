@@ -8,6 +8,12 @@ package com.example.policyengine;
 import static com.example.policyengine.Util.createKjar;
 import static com.example.policyengine.Util.deployKjar;
 import org.json.JSONObject;
+import org.springframework.amqp.core.FanoutExchange;
+import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.core.TopicExchange;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -19,6 +25,12 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 public class PolicyEngineController {
+
+//    @Autowired
+//    private RabbitTemplate template;
+//
+//    @Autowired
+//    private FanoutExchange fanout;
 
     @RequestMapping("/hello")
     public String hello() {
@@ -42,8 +54,20 @@ public class PolicyEngineController {
         String version = "1.0.0-SNAPSHOT";
         String artifactId = policyUpdateInfoJson.getString("deployed_graph");
         String rules = policyUpdateInfoJson.getString("rules");
+
+        //check if worker that gets this request has the enforced policy
         createKjar(groupId, artifactId, version, rules);
         deployKjar(artifactId);
+
+//        template.convertAndSend(fanout.getName(), queue.getName(), "se parakalooooooooooo", m -> {
+//            m.getMessageProperties().setAppId("tng-policy-mngr");
+//            m.getMessageProperties().setReplyTo(queue.getName());
+//            m.getMessageProperties().setCorrelationId("eno adio galdkgjald");
+//            return m;
+//        });
+        
+//        template.convertAndSend(fanout.getName(), "", "se parakalooooooooooo");
+        
 
         return true;
     }

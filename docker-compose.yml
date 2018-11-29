@@ -16,6 +16,14 @@ services:
      - "15672:15672"
     container_name: broker
     restart: always
+  my-nexus:
+    image: sonatype/nexus3:3.0.0
+    ports:
+     - "8081:8081"
+     - "8082:8082"
+     - "8083:8083"
+    container_name: my-nexus
+    restart: always
   #policyengine:
   #  build:
   #   context: .

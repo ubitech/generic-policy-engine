@@ -63,11 +63,11 @@ public class DeployedNSListener {
         
         //TODO:check succesfull exit code from bash script execution
 
-        try {
-            Thread.sleep(3000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            Thread.sleep(7000);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
 
         //enforce policy
         KieServices ks = KieServices.Factory.get();

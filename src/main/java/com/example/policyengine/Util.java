@@ -117,8 +117,10 @@ public class Util {
 
         try {
             String[] command = {"./deploykjar.sh", artifactId};
+            log.info("A procces will be executed");
             Process process = Runtime.getRuntime().exec(command);
             process.waitFor();
+            log.info("procces is executed " + process.exitValue());
 
         } catch (IOException ex) {
             Logger.getLogger(PolicyengineApplication.class.getName()).log(Level.SEVERE, null, ex);

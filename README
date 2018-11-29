@@ -26,6 +26,7 @@ docker ps --size
 docker exec -it  c835782872e7  bash
 docker logs c835782872e7 --follow
 docker stop 169d1c80dd87
+docker rm $(docker stop $(docker ps -a -q --filter ancestor=policyengine --format="{{.ID}}"))
 
 
 //Start broker
@@ -35,6 +36,7 @@ docker exec broker rabbitmq-plugins enable rabbitmq_management
 //Access to http://localhost:15672 with username/password guest/guest
 
 //start nexus container
+docker-compose up -d my-nexus //like this there is a connectivity problem between policy manager container and nexus
 docker run -d -p 8081:8081 -p 8082:8082 -p 8083:8083 --name my-nexus sonatype/nexus3:3.0.0
 //create maven-group with central-releases-snapshots
 //deploy kjars to ubi-nexus

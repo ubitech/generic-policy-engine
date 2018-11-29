@@ -2,13 +2,17 @@ package com.example.policyengine;
 
 import com.example.policyengine.messaging.DeployedNSListener;
 import com.example.policyengine.messaging.MonitoringListener;
+import com.example.policyengine.messaging.UpdatePolicyListener;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.kie.api.KieServices;
 import org.slf4j.LoggerFactory;
+import org.springframework.amqp.core.AnonymousQueue;
 
 import org.springframework.amqp.core.Queue;
 
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
+import org.springframework.amqp.core.FanoutExchange;
 import org.springframework.amqp.core.TopicExchange;
 import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
 import org.springframework.amqp.rabbit.listener.adapter.MessageListenerAdapter;
@@ -24,16 +28,23 @@ public class PolicyengineApplication {
 
     private static org.slf4j.Logger log = LoggerFactory.getLogger(PolicyengineApplication.class);
 
+    String generatedString = RandomStringUtils.randomAlphabetic(10);
     public final static String NS_INSTATIATION_QUEUE = "policies.service.instances.create";
     public final static String NS_INSTATIATION_TOPIC = "service.instances.create";
 
     public final static String MONITORING_QUEUE = "son.monitoring.PLC";
 
+    //public final static String POLICY_UPDATE_QUEUE = "policies.service.instances.update";
     //public final static String MONITORING_QUEUE = "policies.service.instances.monit";
     //public final static String MONITORING_TOPIC = "service.instances.monit";
     @Bean
     TopicExchange exchange() {
         return new TopicExchange("son-kernel", false, false);
+    }
+
+    @Bean
+    public FanoutExchange fanout() {
+        return new FanoutExchange("tut.fanout");
     }
 
     @Bean
@@ -101,6 +112,35 @@ public class PolicyengineApplication {
         return container;
     }
 
+    // Configure connection with rabbit mq for Policy update Queue
+    @Bean
+    public Queue autoDeleteQueue1() {
+        return new AnonymousQueue();
+    }
+
+    @Bean
+    public Binding binding1(FanoutExchange fanout,
+            Queue autoDeleteQueue1) {
+        return BindingBuilder.bind(autoDeleteQueue1).to(fanout);
+    }
+
+    @Qualifier("updatePolicyListenerAdapter")
+    @Bean
+    MessageListenerAdapter updatePolicyListenerAdapter(UpdatePolicyListener receiver) {
+        MessageListenerAdapter msgadapter = new MessageListenerAdapter(receiver, "updatePolicyMessageReceived");
+        return msgadapter;
+    }
+
+    @Qualifier("updatePolicyContainer")
+    @Bean
+    SimpleMessageListenerContainer updatePolicyContainer(ConnectionFactory connectionFactory,
+            @Qualifier("updatePolicyListenerAdapter") MessageListenerAdapter listenerAdapter) {
+        SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
+        container.setConnectionFactory(connectionFactory);
+        container.setQueueNames(autoDeleteQueue1().getName());
+        container.setMessageListener(listenerAdapter);
+        return container;
+    }
 
     public static void main(String[] args) {
         SpringApplication.run(PolicyengineApplication.class, args);
