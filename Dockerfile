@@ -1,4 +1,4 @@
-FROM maven
+FROM kaiwinter/docker-java8-maven
 
 WORKDIR /app
 RUN cd /app

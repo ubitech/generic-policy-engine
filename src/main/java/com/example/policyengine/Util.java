@@ -5,8 +5,11 @@
  */
 package com.example.policyengine;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.StringWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -91,8 +94,7 @@ public class Util {
                     + "</kmodule>";
 
             Files.write(Paths.get(artifactId + "/src/main/resources/META-INF/kmodule.xml"), kmodulexmlString.getBytes());
-            
-            
+
             //update rules.drl
             Files.write(Paths.get(artifactId + "/src/main/resources/rules/rules.drl"), rules.getBytes());
 
@@ -118,8 +120,29 @@ public class Util {
         try {
             String[] command = {"./deploykjar.sh", artifactId};
             log.info("A procces will be executed");
-            Process process = Runtime.getRuntime().exec(command);
-            process.waitFor();
+//            Process process = Runtime.getRuntime().exec(command);
+//            process.waitFor();
+
+//            ProcessBuilder pb = new ProcessBuilder();
+//            pb.command(command);
+//            System.out.println("Run echo command");
+//            Process process = pb.start();
+//            int errCode = process.waitFor();
+//            System.out.println("Echo command executed, any errors? " + (errCode == 0 ? "No" : "Yes"));
+//            System.out.println("Echo Output:\n" + output(process.getInputStream()));
+            ProcessBuilder pb = new ProcessBuilder();
+            pb.command(command);
+            pb.redirectErrorStream(true);
+            Process process = pb.start();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                System.out.println("tasklist: " + line);
+            }
+            int errCode = process.waitFor();
+            System.out.println("Echo command executed, any errors? " + (errCode == 0 ? "No" : "Yes"));
+            System.out.println("Echo Output:\n" + output(process.getInputStream()));
+
             log.info("procces is executed " + process.exitValue());
 
         } catch (IOException ex) {
@@ -151,5 +174,19 @@ public class Util {
         }
     }
 
-    
+    private static String output(InputStream inputStream) throws IOException {
+        StringBuilder sb = new StringBuilder();
+        BufferedReader br = null;
+        try {
+            br = new BufferedReader(new InputStreamReader(inputStream));
+            String line = null;
+            while ((line = br.readLine()) != null) {
+                sb.append(line + System.getProperty("line.separator"));
+            }
+        } finally {
+            br.close();
+        }
+        return sb.toString();
+    }
+
 }
