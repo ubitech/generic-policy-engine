@@ -34,9 +34,7 @@ public class PolicyengineApplication {
 
     public final static String MONITORING_QUEUE = "son.monitoring.PLC";
 
-    //public final static String POLICY_UPDATE_QUEUE = "policies.service.instances.update";
-    //public final static String MONITORING_QUEUE = "policies.service.instances.monit";
-    //public final static String MONITORING_TOPIC = "service.instances.monit";
+
     @Bean
     TopicExchange exchange() {
         return new TopicExchange("son-kernel", false, false);
@@ -151,9 +149,7 @@ public class PolicyengineApplication {
 
         //Util.createKjar(groupId2, artifactId2, version2);
         //Util.deployKjar(artifactId2);
-        //////////////
-        KieServices ks = KieServices.Factory.get();
-
+//       KieServices ks = KieServices.Factory.get();
 //        String groupId2 = "org.drools.workshop";
 //        String artifactId2 = "my-second-drools-kjar";
 //        String version2 = "1.0.3-SNAPSHOT";

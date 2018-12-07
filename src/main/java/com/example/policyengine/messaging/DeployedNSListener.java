@@ -59,14 +59,6 @@ public class DeployedNSListener {
         boolean succesful_deploy = deployKjar(artifactId);
         
         if (!succesful_deploy) {return;}
-        
-        //TODO:check succesfull exit code from bash script execution
-
-//        try {
-//            Thread.sleep(7000);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
 
         //enforce policy
         KieServices ks = KieServices.Factory.get();
@@ -81,36 +73,6 @@ public class DeployedNSListener {
 
         kieUtil.fireKieSession(ksession, sessionname);
 
-//        Thread t = new Thread() {
-//
-//            @Override
-//            public void run() {
-//                ksession.fireUntilHalt();
-//            }
-//        };
-//
-//        t.setName(sessionname);
-//
-//        t.start();
-//
-//        for (int i = 0; i < 100; i++) {
-//            kscanner2.scanNow();
-//            ksession.insert(new String("Eleni"));
-//            //ksession.insert(new SampleFact("SampleFactValue"));
-//
-//            MonitoredComponent component = new MonitoredComponent("vnf1", "CPULoad", 80, "test");
-//            EntryPoint monitoringStream = ksession.getEntryPoint("MonitoringStream");
-//
-//            monitoringStream.insert(component);
-//
-//            System.out.println("facts number " + ksession.getObjects().size());
-//            try {
-//                Thread.sleep(2000);
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
-//        }
-//        kscanner2.stop();
     }
 
 }

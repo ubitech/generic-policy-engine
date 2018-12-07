@@ -121,16 +121,7 @@ public class Util {
         try {
             String[] command = {"./deploykjar.sh", artifactId};
             log.info("A procces will be executed");
-//            Process process = Runtime.getRuntime().exec(command);
-//            process.waitFor();
 
-//            ProcessBuilder pb = new ProcessBuilder();
-//            pb.command(command);
-//            System.out.println("Run echo command");
-//            Process process = pb.start();
-//            int errCode = process.waitFor();
-//            System.out.println("Echo command executed, any errors? " + (errCode == 0 ? "No" : "Yes"));
-//            System.out.println("Echo Output:\n" + output(process.getInputStream()));
             ProcessBuilder pb = new ProcessBuilder();
             pb.command(command);
             pb.redirectErrorStream(true);

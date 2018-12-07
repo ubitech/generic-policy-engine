@@ -6,7 +6,6 @@ EXPOSE 8090
 COPY settings.xml .
 COPY settings.xml /root/.m2/settings.xml
 COPY /target/policyengine-0.0.1-SNAPSHOT.jar .
-COPY /my-second-drools-kjar /my-second-drools-kjar
 COPY /sample-kjar /app/sample-kjar
 COPY /deploykjar.sh /app/deploykjar.sh
 

@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import org.json.JSONArray;
+import org.json.JSONObject;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.EntryPoint;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
@@ -33,18 +34,21 @@ public class MonitoringListener {
     @Autowired
     private KieUtil kieUtil;
 
+    
     /*
-     [{"ObjectType": "SampleFact"},
-     {"deployed_graph":"my-x-kjar"},
-     {"value": "SampleFactValue","deployed_graph":"my-x-kjar"}
-     ]
+    content_type: application/json
+     {
+     "ObjectType": "SampleFact",
+     "deployed_graph":"my-x-kjar",
+     "ObjectData":{"value": "SampleFactValue","deployed_graph":"my-x-kjar"}
+     }
     
-    
-     [{"ObjectType": "MonitoredComponent"},
-     {"deployed_graph":"my-x-kjar"},
-     {"name": "vnf1","metric":"CPULoad","value":80,"deployed_graph":"my-x-kjar"}
-     ]
-    
+     content_type: application/json
+     {
+     "ObjectType": "MonitoredComponent",
+     "deployed_graph":"my-x-kjar",
+     "ObjectData":{"name": "vnf1","metric":"CPULoad","value":80,"deployed_graph":"my-x-kjar"}
+     }
      */
     @RabbitListener(queues = PolicyengineApplication.MONITORING_QUEUE)
     public void monitoringAlertReceived(byte[] message) {
@@ -52,16 +56,16 @@ public class MonitoringListener {
         String messageAsString = new String(message, StandardCharsets.UTF_8);
         log.info("New Monitoring Message: " + messageAsString);
 
-        JSONArray messageAsJSONOArray = new JSONArray(messageAsString);
-        String objectType = messageAsJSONOArray.getJSONObject(0).getString("ObjectType");
-        String containerName = messageAsJSONOArray.getJSONObject(1).getString("deployed_graph");
+        JSONObject messageToJSON = new JSONObject(messageAsString);
+         String objectType = messageToJSON.getString("ObjectType");
+        String containerName = messageToJSON.getString("deployed_graph");
 
         if (!kieUtil.seeThreadMap().containsKey(containerName)) {
             log.info("Missing Knowledge base " + containerName);
             return;
         }
 
-        String objectAsString = messageAsJSONOArray.get(2).toString();
+       String objectAsString = messageToJSON.getJSONObject("ObjectData").toString();
         KieSession ksession = (KieSession) kieUtil.seeThreadMap().get(containerName);
 
 
