@@ -10,7 +10,7 @@ Discovery of remote kjars is done via the drools KieScanner. KieScanner is a sca
 
 The delivery of the different policy action messages are delivered at the policy engine workers as follows:  
 
-<img src="/images/distributedpolicymanager.png" width="500">
+<img src="/images/distributedpolicymanager.png" width="1000">
 
 #### Prerequisites:
 1. Rabbitmq pub/sub framework  
