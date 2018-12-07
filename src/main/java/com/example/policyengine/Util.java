@@ -14,6 +14,7 @@ import java.io.StringWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Comparator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
@@ -143,6 +144,10 @@ public class Util {
             System.out.println("Echo command executed, any errors? " + (errCode == 0 ? "No" : "Yes"));
             System.out.println("Echo Output:\n" + output(process.getInputStream()));
 
+            if (errCode != 0) {
+                return false;
+            }
+
             log.info("procces is executed " + process.exitValue());
 
         } catch (IOException ex) {
@@ -155,6 +160,14 @@ public class Util {
 
     public static void copyFolder(Path src, Path dest) {
         try {
+            //delete dest directory if it already exists
+            if (Files.exists(dest)) {
+                Files.walk(dest)
+                        .sorted(Comparator.reverseOrder())
+                        .map(Path::toFile)
+                        .forEach(File::delete);
+            }
+            
             Files.walk(src).forEach(s -> {
                 try {
                     Path d = dest.resolve(src.relativize(s));

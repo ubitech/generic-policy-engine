@@ -9,8 +9,6 @@ import com.example.policyengine.KieContainersManagement.KieUtil;
 import com.example.policyengine.PolicyengineApplication;
 import static com.example.policyengine.Util.createKjar;
 import static com.example.policyengine.Util.deployKjar;
-import com.example.policyengine.facts.MonitoredComponent;
-import com.example.policyengine.facts.SampleFact;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
@@ -22,7 +20,6 @@ import org.kie.api.builder.KieScanner;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.rule.EntryPoint;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -59,7 +56,9 @@ public class DeployedNSListener {
         String artifactId = messageToJSON.getString("deployed_graph");
         String rules = messageToJSON.getString("rules");
         createKjar(groupId, artifactId, version, rules);
-        deployKjar(artifactId);
+        boolean succesful_deploy = deployKjar(artifactId);
+        
+        if (!succesful_deploy) {return;}
         
         //TODO:check succesfull exit code from bash script execution
 

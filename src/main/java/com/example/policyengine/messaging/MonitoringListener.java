@@ -65,7 +65,7 @@ public class MonitoringListener {
         KieSession ksession = (KieSession) kieUtil.seeThreadMap().get(containerName);
 
 
-        String typeOfDay;
+       
         switch (objectType) {
             case "SampleFact":
                 SampleFact sampleFact = new Gson().fromJson(objectAsString, SampleFact.class);

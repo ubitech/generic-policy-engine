@@ -1,4 +1,6 @@
 /target/
+nb-configuration.xml
+/.mvn
 !.mvn/wrapper/maven-wrapper.jar
 
 ### STS ###
@@ -9,6 +11,7 @@
 .settings
 .springBeans
 .sts4-cache
+.directory
 
 ### IntelliJ IDEA ###
 .idea
@@ -23,9 +26,3 @@
 /dist/
 /nbdist/
 /.nb-gradle/
-/test/target/
-/my-new-kjar/target/
-/mynewkjar/target/
-/alfanumric935/target/
-/mytestgraph/target/
-/my-x-kjar/target/
